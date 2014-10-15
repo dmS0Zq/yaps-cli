@@ -26,14 +26,14 @@ private:
     std::string m_dateFormatString;
     std::string m_passwordScheme;
 public:
-    //void setId(uint64_t id) {m_id = id;} //... shouldn't ever be needed, eh?
+    void setId(uint64_t id) {m_id = id;}
     void setParent(uint64_t parent) {m_parent = parent;}
     void setTitle(std::string title) {m_title = title;}
     void setUsername(std::string username) {m_username = username;}
     void setPassword(std::string password) {m_password = password;}
     void setUrl(std::string url) {m_url = url;}
     void setNotes(std::string notes) {m_notes = notes;}
-    //void setCreated() //... shouldn't ever be needed, eh?
+    void setCreated(DateTime time = getCurrentLocalTime()) {m_created = time;}
     void setModified(DateTime time = getCurrentLocalTime()) {m_modified = time;}
     //void setDateFormatString(std::string format) {m_dateFormatString = format;}
     void setPasswordScheme(std::string scheme) {m_passwordScheme = scheme;}
@@ -50,7 +50,7 @@ public:
     std::string getPasswordScheme() {return m_passwordScheme;}
     uint64_t getCreatedUInt64() {return m_created.asUInt64();}
     uint64_t getModifiedUInt64() {return m_modified.asUInt64();}
-    Entry(uint64_t parentId = 0, uint64_t id = 0, uint64_t created = 0);
+    Entry();
     ~Entry();
 
     inline bool operator==(const Entry& that) const
