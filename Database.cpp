@@ -82,40 +82,19 @@ void Database::saveToFile(std::string fileName)
 void readTreeFromFile_v1(std::ifstream &is, Tree<Entry>* tree)
 {
     using namespace FileIO;
-    u64 id;
-    u64 parentId;
-    LongData title;
-    LongData username;
-    LongData password;
-    LongData url;
-    LongData notes;
-    u64 created;
-    u64 modified;
-    LongData passwordScheme;
-    is >> id;
-    is >> parentId;
-    is >> title;
-    is >> username;
-    is >> password;
-    is >> url;
-    is >> notes;
-    is >> created;
-    is >> modified;
-    is >> passwordScheme;
-    Entry newEntry = Entry(parentId, id, created);
-    newEntry.setTitle(title.toString());
-    newEntry.setUsername(username.toString());
-    newEntry.setPassword(password.toString());
-    newEntry.setUrl(url.toString());
-    newEntry.setNotes(notes.toString());
-    newEntry.setModified(DateTime(modified));
-    newEntry.setPasswordScheme(passwordScheme.toString());
-    tree->setRoot(newEntry);
-
-    u8 processByte;
-    is >> processByte;
+    u8 processByte = 0x01;
     while (processByte != 0x00)
     {
+        u64 id;
+        u64 parentId;
+        LongData title;
+        LongData username;
+        LongData password;
+        LongData url;
+        LongData notes;
+        u64 created;
+        u64 modified;
+        LongData passwordScheme;
         is >> id;
         is >> parentId;
         is >> title;
@@ -126,17 +105,23 @@ void readTreeFromFile_v1(std::ifstream &is, Tree<Entry>* tree)
         is >> created;
         is >> modified;
         is >> passwordScheme;
-        newEntry = Entry(parentId, id, created);
+        Entry newEntry = Entry();
+        newEntry.setId(id);
+        newEntry.setParent(parentId);
         newEntry.setTitle(title.toString());
         newEntry.setUsername(username.toString());
         newEntry.setPassword(password.toString());
         newEntry.setUrl(url.toString());
         newEntry.setNotes(notes.toString());
+        newEntry.setCreated(DateTime(created));
         newEntry.setModified(DateTime(modified));
         newEntry.setPasswordScheme(passwordScheme.toString());
-
         auto parentIdFinder = [&parentId](Tree<Entry>* tree) -> Tree<Entry>* {return (parentId == tree->getRoot()->getId() ? tree : nullptr);};
-        tree->findUsing(parentIdFinder)->addBranch(newEntry);
+        Tree<Entry>* parent = tree->findUsing(parentIdFinder);
+        if (parent == nullptr)
+            tree->addBranch(newEntry);
+        else
+            parent->addBranch(newEntry);
 
         is >> processByte;
     }
