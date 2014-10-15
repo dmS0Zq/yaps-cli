@@ -1,0 +1,89 @@
+byte[8]     header      "yapsdata"              // identifies this file
+u32         version     1                       /* indicates version number for save file
+                                                 * can be used to allow for backwards compatability
+                                                 */
+
+// start of database data
+
+/* LongData type consists of:
+ * u32: number of bytes that follow (n)
+ * byte*n: the actual data that should be read in as chars to become a std::string
+ */
+
+// First entry, required. Global defaults for new entries
+u64         id                      4444444     // unique 64 bit identifier.
+u64         parent                  0           // root has no parent
+LongData    title                   ""          // no purpose
+LongData    username                "foouser"   // default username
+LongData    password                ""          // default password? Consider allowing that. Otherwise no purpose at root entry
+LongData    url                     ""          // no purpose
+LongData    notes                   ""          // no purpose
+u64         created                 DateTime    // std::string when database was made (xxxx-xx-xx xx:xx:xx)
+u64         modified                DateTime    // same, but when modified
+LongData    passwordScheme          ""          // default password scheme for generating new passwords
+
+u8          processByte             0x00 or 0x01 // what to do next, 0 = done, 1 = continue
+
+// what follows is any number of entries following the above format.
+
+// Example entries. See the entry above for up-to-date formats as I may not remember to update down here
+
+u64         id                      872398758321
+u64         parent                  4444444
+LongData    title                   "Email Accounts"
+LongData    username                "mailman"
+LongData    password                ""
+LongData    url                     ""
+LongData    notes                   ""
+LongData    created                 "xxxx-xx-xx xx:xx:xx"
+LongData    modified                "xxxx-xx-xx xx:xx:xx"
+LongData    passwordScheme          ""
+
+u8          processByte             0x00 or 0x01
+
+u64         id                      329687123
+u64         parent                  872398758321
+LongData    title                   "gmail"
+LongData    username                "mailman@gmail.com"
+LongData    password                "pASSw0rD"
+LongData    url                     "http://gmail.com"
+LongData    notes                   "Security Question: Mother's maiden name? A: Smith"
+u64         created                 "2014-01-01 11:04:20"
+u64         modified                "2014-02-26 20:00:12"
+LongData    passwordScheme          ""
+
+u8          processByte             0x00 or 0x01
+
+u64         id                      487954698798756
+u64         parent                  872398758321
+LongData    title                   "hotmail"
+LongData    username                "myname@hotmail.com"
+...
+
+u8          processByte             0x0000 or 0x0001
+
+u64         id                      1246785
+u64         parent                  4444444
+LongData    title                   "Windows User Account"
+LongData    username                "myname"
+...
+
+u8          processByte             0x00 or 0x01
+
+u64         id                      98752
+u64         parent                  4444444
+LongData    title                   "Shopping Accounts"
+LongData    username                ""
+...
+
+u8          processByte             0x0000 or 0x0001
+
+u64         id                      54698756
+u64         parent                  98752
+LongData    title                   "Amazon"
+LongData    username                "myname@hotmail.com"
+...
+
+u8          processByte             0x00 or 0x01
+
+
