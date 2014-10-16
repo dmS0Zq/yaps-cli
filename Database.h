@@ -10,7 +10,7 @@ class Database
 private:
     //std::string m_name;
     std::string m_path;
-    std::string m_password;
+    std::string m_password; // may not be needed, not sure
     Tree<Entry> m_entries;
 public:
     void setName(std::string name) {m_entries.getRoot()->setTitle(name);}
@@ -21,7 +21,7 @@ public:
     Tree<Entry>* getEntries() {return &m_entries;}
     //std::string getPassword() {return m_password;}
     uint64_t addEntry(Entry entry, uint64_t parent);
-    std::string print(Tree<Entry>* subTree = nullptr);
+    std::string print(Tree<Entry>* subTree = nullptr); // if left default (nullptr), entire db will be printed
     void saveToFile(std::string fileName);
     void readFromFile(std::string fileName);
     Database();
