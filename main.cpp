@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <random>
 #include <chrono>
@@ -6,7 +7,11 @@
 #include "Database.h"
 #include "Entry.h"
 const std::string VERSION = "0.0.0a";
-std::string databaseFilename;
+
+std::string g_databaseFilename = "pwsafe.yaps";
+std::string g_entryTitleToAdd = "";
+
+Database database;
 
 std::string version()
 {
@@ -37,7 +42,8 @@ int parseInput(int argc, char* argv[])
     struct option long_options[] =
     {
         {"help", no_argument, 0, 'h'},
-        {"file", required_argument, 0, 'f'}
+        {"file", required_argument, 0, 'f'},
+        {"add", required_argument, 0, 'a'},
         //{"verbose", no_argument, 0, 'v'},
         //{"list-all", no_argument, 0, 'l'},
         //{"threads", required_argument, 0, 't'}
@@ -46,8 +52,26 @@ int parseInput(int argc, char* argv[])
     // only one arg (program name)
     if (argc == 1)
     {
-        std::cout << usage();
-        return 1;
+        std::ifstream fileCheck(g_databaseFilename);
+        if (fileCheck.is_open())
+        {
+            // file already exists, use it
+        }
+        else
+        {
+            std::ofstream newFile(g_databaseFilename);
+            if (newFile.is_open())
+            {
+                database = Database();
+                database.setName("Password Safe");
+                database.setPath(g_databaseFilename);
+                database.saveToFile(database.getPath());
+                std::cout << "New database created: " << g_databaseFilename << std::endl;
+            }
+            else std::cout << "Error making new database\n";
+        }
+        fileCheck.close();
+        return 0;
     }
     else
     {
@@ -62,7 +86,10 @@ int parseInput(int argc, char* argv[])
                     return 1;
                     break;
                 case 'f': // file
-                    databaseFilename = optarg;
+                    g_databaseFilename = optarg;
+                    break;
+                case 'a': // add entry (arg is title)
+                    g_entryTitleToAdd = optarg;
                     break;
                 /*case 'v': // verbose flag
                     verbose = true;
@@ -96,40 +123,13 @@ int main(int argc, char* argv[])
     using std::cin;
     using std::endl;
 
-    Database db;
-    db.setName("pwsafe");
-    Entry newEntry = Entry();
-    newEntry.setTitle("Reddit");
-    db.addEntry(newEntry, db.getEntries()->getRoot()->getId());
-    newEntry = Entry();
-    newEntry.setTitle("Facebook");
-    db.addEntry(newEntry, db.getEntries()->getRoot()->getId());
-    newEntry = Entry();
-    newEntry.setTitle("Email");
-    db.addEntry(newEntry, db.getEntries()->getRoot()->getId());
-
-    std::string title = "Email";
-    auto byTitle = [&title](Tree<Entry>* tree) -> Tree<Entry>* {return (title == tree->getRoot()->getTitle() ? tree : nullptr);};
-    newEntry = Entry();
-    newEntry.setTitle("gmail");
-    db.addEntry(newEntry, db.getEntries()->findUsing(byTitle)->getRoot()->getId());
-
-    title = "gmail";
-    newEntry = Entry();
-    newEntry.setTitle("mt.traudt@gmail.com");
-    db.addEntry(newEntry, db.getEntries()->findUsing(byTitle)->getRoot()->getId());
-
-    cout << db.print() << endl;
-
     if (parseInput(argc, argv) != 0) return 1;
 
-    db.saveToFile(databaseFilename);
+    database = Database();
 
-    db = Database();
+    database.readFromFile(g_databaseFilename);
 
-    db.readFromFile(databaseFilename);
-
-    std::cout << db.print() << std::endl;
+    std::cout << database.print();
 
     return 0;
 }
