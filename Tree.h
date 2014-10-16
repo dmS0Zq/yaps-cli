@@ -39,6 +39,13 @@ public:
 
     Tree<T>* findUsing(std::function<Tree<T>* (Tree<T>*)> searchCriteria)
     {
+        // example searchCriteria functions
+        // mainly useful in this (yaps) program
+        //
+        // search by title:
+        // auto byTitle    = [&title](Tree<Entry>* tree) -> Tree<Entry>* {return (title == tree->getRoot()->getTitle() ? tree : nullptr);};
+        // search by parentId
+        // auto byParentId = [&parentId](Tree<Entry>* tree) -> Tree<Entry>* {return (parentId == tree->getRoot()->getId() ? tree : nullptr);};
         Tree<T>* result = searchCriteria(this);
         if (result == nullptr && m_branches != nullptr)
         {
