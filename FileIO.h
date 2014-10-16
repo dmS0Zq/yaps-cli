@@ -6,6 +6,7 @@
 
 namespace FileIO
 {
+// typedefs to make type names shorter
 typedef uint8_t u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
@@ -16,6 +17,10 @@ typedef int32_t s32;
 typedef int64_t s64;
 typedef char byte;
 
+//
+// stores an arbitrarily long series of bytes.
+// makes it easier to write longer things to file.
+//
 class LongData
 {
 public:
@@ -28,17 +33,20 @@ public:
     ~LongData();
 };
 
+//
+// overload stream operators to write out all the above types
+// in the way this program expects
+//
 std::ofstream& operator<<(std::ofstream &os, LongData data);
-std::ofstream& operator<<(std::ofstream &os, uint8_t data);
-std::ofstream& operator<<(std::ofstream &os, uint16_t data);
-std::ofstream& operator<<(std::ofstream &os, uint32_t data);
-std::ofstream& operator<<(std::ofstream &os, uint64_t data);
-
+std::ofstream& operator<<(std::ofstream &os, u8 data);
+std::ofstream& operator<<(std::ofstream &os, u16 data);
+std::ofstream& operator<<(std::ofstream &os, u32 data);
+std::ofstream& operator<<(std::ofstream &os, u64 data);
 std::ifstream& operator>>(std::ifstream &is, LongData &data);
-std::ifstream& operator>>(std::ifstream &is, uint8_t &data);
-std::ifstream& operator>>(std::ifstream &is, uint16_t &data);
-std::ifstream& operator>>(std::ifstream &is, uint32_t &data);
-std::ifstream& operator>>(std::ifstream &is, uint64_t &data);
+std::ifstream& operator>>(std::ifstream &is, u8 &data);
+std::ifstream& operator>>(std::ifstream &is, u16 &data);
+std::ifstream& operator>>(std::ifstream &is, u32 &data);
+std::ifstream& operator>>(std::ifstream &is, u64 &data);
 
 }
 
