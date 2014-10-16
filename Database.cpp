@@ -1,6 +1,7 @@
 #include "Database.h"
 #include "FileIO.h"
 #include <fstream>
+#include <string.h> // strncmp()
 
 uint64_t Database::addEntry(Entry entry, uint64_t parentId)
 {
@@ -83,7 +84,7 @@ void Database::saveToFile(std::string fileName)
     if (file.is_open())
     {
         using namespace FileIO;
-        LongData header = LongData("yapsdata");
+        byte header[] = "yapsdata";
         u32 fileFormatVersion = 1;
         file << header;
         file << fileFormatVersion;
@@ -165,9 +166,9 @@ void Database::readFromFile(std::string fileName)
     if (file.is_open())
     {
         using namespace FileIO;
-        LongData header;
-        file >> header;
-        if (header.toString() != "yapsdata"); // bad! throw something probably
+        byte header[8];
+        file.read(header, 8);
+        if (strncmp(header, "yapsdata", 8)!=0); // bad! throw something probably
         else
         {
             u32 saveFileVersion;
