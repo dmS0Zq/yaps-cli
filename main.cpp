@@ -95,16 +95,6 @@ int main(int argc, char* argv[])
     using std::cout;
     using std::cin;
     using std::endl;
-    /*
-    Database db;
-    std::string tmp;
-    cout << "Welcome. Path to new database: ";
-    getline(cin >> std::ws, tmp);
-    db.setPath(tmp);
-    cout << "Name for new database: ";
-    getline(cin >> std::ws, tmp);
-    db.setName(tmp);
-    */
 
     Database db;
     db.setName("pwsafe");
@@ -132,12 +122,6 @@ int main(int argc, char* argv[])
     cout << db.print() << endl;
 
     if (parseInput(argc, argv) != 0) return 1;
-
-    db.saveToFile(databaseFilename);
-
-    db = Database();
-
-    db.readFromFile(databaseFilename);
 
     db.saveToFile(databaseFilename);
 
