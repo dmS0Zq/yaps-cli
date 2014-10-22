@@ -50,6 +50,7 @@ public:
     std::string getPasswordScheme() {return m_passwordScheme;}
     uint64_t getCreatedUInt64() {return m_created.asUInt64();}
     uint64_t getModifiedUInt64() {return m_modified.asUInt64();}
+    std::string print();
     Entry();
     ~Entry();
 

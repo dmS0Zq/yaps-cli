@@ -7,6 +7,19 @@
 
 std::mt19937_64 mtrand = std::mt19937_64(std::chrono::high_resolution_clock::now().time_since_epoch().count());
 
+std::string Entry::print()
+{
+    std::string str;
+    str += "Title: " + getTitle() + "\n";
+    str += "Username: " + getUsername() + "\n";
+    str += "Password: " + getPassword() + "\n";
+    str += "URL: " + getUrl() + "\n";
+    str += "Notes:\n" + getNotes() + "\n";
+    str += "Created: " + getCreated() + "\n";
+    str += "Modified: " + getModified() + "\n";
+    return str;
+}
+
 Entry::Entry()
 {
     m_username = "";
