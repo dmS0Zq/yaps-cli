@@ -8,8 +8,16 @@
 #include "Entry.h"
 const std::string VERSION = "0.0.0a";
 
+enum MainOptions
+{
+    moNothing, // do nothing!
+    moPrint, // print database
+    moAdd, // add entry to database
+};
+
 std::string g_databaseFilename = "pwsafe.yaps";
-std::string g_entryTitleToAdd = "";
+MainOptions g_whatDo = moNothing; // determine what to do from invocation, store here. do only one thing
+std::string g_optionArgument = ""; // argument given after determing what to do, store here.
 
 Database database;
 
@@ -28,6 +36,51 @@ std::string usage()
     return str;
 }
 
+inline bool doesFileExist(std::string filename)
+{
+    std::ifstream file(filename);
+    return file.is_open();
+}
+
+Entry& editEntry(Entry &entry)
+{
+    using std::cout;
+    using std::cin;
+    using std::endl;
+    std::string title;
+    std::string username;
+    std::string password;
+    std::string url;
+    std::string notes;
+    cout << "Title [" << entry.getTitle() << "]: "; getline(cin, title);
+    cout << "Username [" << entry.getUsername() << "]: "; getline(cin, username);
+    cout << "Password [" << entry.getPassword() << "]: "; getline(cin, password);
+    cout << "URL [" << entry.getUrl() << "]: "; getline(cin, url);
+    cout << "Notes [\n" << entry.getNotes() << "\n]: ";
+    for (std::string tmp = "\n"; tmp != ""; getline(cin, tmp))
+        {if (tmp!= "\n") notes += tmp;}
+    if (title != "") entry.setTitle(title);
+    if (username != "") entry.setUsername(username);
+    if (password != "") entry.setPassword(password);
+    if (url != "") entry.setUrl(url);
+    if (notes != "") entry.setNotes(notes);
+    return entry;
+}
+
+// user can pass a "path" through "folders" in database
+// to make/edit an entry with a parent other than root
+// this takes "EmailAccounts/Work/Sales" and returns "Sales"
+// if "EmailAccounts/Work/Sales/" is passed, returns empty string
+std::string basename(std::string pathStr)
+{
+    size_t slashPosition = pathStr.find('/', 0);
+    while  (slashPosition != std::string::npos)
+    {
+        pathStr = pathStr.substr(slashPosition+1);
+        slashPosition = pathStr.find('/', 0);
+    }
+    return pathStr;
+}
 
 int parseInput(int argc, char* argv[])
 {
@@ -50,27 +103,10 @@ int parseInput(int argc, char* argv[])
     };
 
     // only one arg (program name)
+    // assume user wants to print and filename is default
     if (argc == 1)
     {
-        std::ifstream fileCheck(g_databaseFilename);
-        if (fileCheck.is_open())
-        {
-            // file already exists, use it
-        }
-        else
-        {
-            std::ofstream newFile(g_databaseFilename);
-            if (newFile.is_open())
-            {
-                database = Database();
-                database.setName("Password Safe");
-                database.setPath(g_databaseFilename);
-                database.saveToFile(database.getPath());
-                std::cout << "New database created: " << g_databaseFilename << std::endl;
-            }
-            else std::cout << "Error making new database\n";
-        }
-        fileCheck.close();
+        g_whatDo = moPrint;
         return 0;
     }
     else
@@ -89,7 +125,14 @@ int parseInput(int argc, char* argv[])
                     g_databaseFilename = optarg;
                     break;
                 case 'a': // add entry (arg is title)
-                    g_entryTitleToAdd = optarg;
+                    if (g_whatDo != moNothing)
+                    {
+                        std::cout << "Error: can only do one thing at a time\n";
+                        std::cout << usage();
+                        return 1;
+                    }
+                    g_whatDo = moAdd;
+                    g_optionArgument = optarg;
                     break;
                 /*case 'v': // verbose flag
                     verbose = true;
@@ -127,9 +170,54 @@ int main(int argc, char* argv[])
 
     database = Database();
 
-    database.readFromFile(g_databaseFilename);
+    // create new database file if specified (or default) one
+    // does not exist
+    if (!doesFileExist(g_databaseFilename))
+    {
+        std::ofstream file(g_databaseFilename);
+        if (file.is_open())
+        {
+            database = Database();
+            database.setName("Password Safe");
+            database.setPath(g_databaseFilename);
+            database.saveToFile(database.getPath());
+            std::cout << "New empty database created: " << g_databaseFilename << std::endl;
+        }
+        else std::cout << "Error making new database\n";
+    }
 
-    std::cout << database.print();
+    switch(g_whatDo)
+    {
+    case moPrint: {
+        database.readFromFile(g_databaseFilename);
+        cout << database.print();
+        break; }
+    case moAdd: {
+        database.readFromFile(g_databaseFilename);
+        Entry entry = Entry();
+        entry.setTitle(basename(g_optionArgument)); // set title to passed arg by default
+        entry = editEntry(entry);
+        cout << "About to generate new entry.\n" << entry.print() << "Look good ([y]es, [n]o, [E]dit)? ";
+        char answer;
+        cin >> answer;
+        if (answer == 'y')
+        {
+            database.addEntry(entry, database.getEntries()->getRoot()->getId());
+        }
+        else if (answer == 'n')
+        {
+            // done
+        }
+        else
+        {
+            ///TODO (matt)
+            /// do it all again, or basically edit this into a loop
+        }
+        cout << database.print() << endl;
+        break; }
+    default: {
+        break; }
+    }
 
     return 0;
 }
