@@ -2,7 +2,7 @@
 #define TREE_H
 #include <exception>
 #include <functional>
-#include "LinkedListNode.h"
+#include <vector>
 
 class IndexOutOfRangeException: public std::exception
 {
@@ -20,24 +20,16 @@ class Tree
 public:
 
     void setRoot(T root) {m_root = root;}
-    T* getRoot() {return &m_root;}
-    Tree<T>* getBranch(unsigned int i)
+    T &getRoot() {return m_root;}
+    Tree<T> &getBranch(unsigned int i)
     {
         if (i >= getBranchCount()) throw IndexOutOfRangeException();
-        else
-        {
-            LinkedListNode<Tree<T>*>* iter = m_branches;
-            for ( ; i > 0; iter = iter->next)
-            {
-                i--;
-            }
-            return iter->data;
-        }
+        else return m_branches[i];
     }
 
     unsigned int getBranchCount() {return m_branchCount;}
 
-    Tree<T>* findUsing(std::function<Tree<T>* (Tree<T>*)> searchCriteria)
+    Tree<T>* findUsing(std::function<Tree<T>& (Tree<T>&)> searchCriteria)
     {
         // example searchCriteria functions
         // mainly useful in this (yaps) program
@@ -46,67 +38,55 @@ public:
         // auto byTitle    = [&title](Tree<Entry>* tree) -> Tree<Entry>* {return (title == tree->getRoot()->getTitle() ? tree : nullptr);};
         // search by parentId
         // auto byParentId = [&parentId](Tree<Entry>* tree) -> Tree<Entry>* {return (parentId == tree->getRoot()->getId() ? tree : nullptr);};
-        Tree<T>* result = searchCriteria(this);
-        if (result == nullptr && m_branches != nullptr)
+        Tree<T> result = searchCriteria(this);
+        if (result == nullptr && m_branches.size() > 0)
         {
-            for (LinkedListNode<Tree<T>*>* iter = m_branches; iter != nullptr; iter = iter->next)
+            for (typename std::vector<Tree<T>>::iterator iter = m_branches.begin(); iter != m_branches.end(); ++iter)
             {
-                result = iter->data->findUsing(searchCriteria);
+                result = (*iter).findUsing(searchCriteria);
                 if (result != nullptr) break;
             }
             return result;
         }
         else return result;
-
     }
-
-    /*bool contains(T needle)
-    {
-        if (needle == m_root)
-            return true;
-        else if (m_count > 0)
-            for (LinkedListNode<Tree<T>*>* iter; iter != nullptr; iter = iter->next)
-                if (iter->find(needle)) return true;
-        else
-            return false;
-    }*/
 
     void addBranch(T data)
     {
-        LinkedListNode<Tree<T>*>* newBranch = new LinkedListNode<Tree<T>*>;
-        newBranch->data = new Tree<T>;
-        newBranch->data->m_root = data;
-        newBranch->next = m_branches;
-        m_branches = newBranch;
+        m_branches.push_back(Tree<T>(data));
         m_branchCount++;
     }
-    void addBranch(Tree<T>* tree)
+    void addBranch(Tree<T> tree)
     {
-        LinkedListNode<Tree<T>*>* newBranch = new LinkedListNode<Tree<T>*>();
-        newBranch->data = tree;
-        newBranch->next = m_branches;
-        m_branches = newBranch;
+        m_branches.push_back(tree);
         m_branchCount++;
+    }
+
+    void prune()
+    {
+        m_branches.resize(0);
+        m_branchCount = 0;
     }
 
     Tree<T>()
     {
-        m_branches = nullptr;
         m_branchCount = 0;
     }
     Tree<T>(T root)
     {
         m_root = root;
-        m_branches = nullptr;
         m_branchCount = 0;
     }
 
-    virtual ~Tree<T>() {}
+    virtual ~Tree<T>()
+    {
+
+    }
 
 private:
     T m_root;
     unsigned int m_branchCount;
-    LinkedListNode<Tree<T>*>* m_branches;
+    std::vector<Tree<T>> m_branches;
 
 };
 
