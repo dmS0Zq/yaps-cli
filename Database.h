@@ -13,12 +13,12 @@ private:
     std::string m_password; // may not be needed, not sure
     Tree<Entry> m_entries;
 public:
-    void setName(std::string name) {m_entries.getRoot()->setTitle(name);}
+    void setName(std::string name) {m_entries.getRoot().setTitle(name);}
     void setPath(std::string path) {m_path = path;}
     void setPassword(std::string password) {m_password = password;}
-    std::string getName() {return m_entries.getRoot()->getTitle();}
+    std::string getName() {return m_entries.getRoot().getTitle();}
     std::string getPath() {return m_path;}
-    Tree<Entry>* getEntries() {return &m_entries;}
+    Tree<Entry> &getEntries() {return m_entries;}
     //std::string getPassword() {return m_password;}
     uint64_t addEntry(Entry entry, uint64_t parent);
     std::string print(Tree<Entry>* subTree = nullptr); // if left default (nullptr), entire db will be printed

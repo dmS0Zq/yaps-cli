@@ -5,8 +5,8 @@
 
 uint64_t Database::addEntry(Entry entry, uint64_t parentId)
 {
-    auto matchFunc = [parentId](Tree<Entry>* tree) -> Tree<Entry>* {return (parentId == tree->getRoot()->getId() ? tree : nullptr);};
-    Tree<Entry>* parent = m_entries.findUsing(matchFunc);
+    auto matchFunc = [parentId](Tree<Entry> *tree) -> Tree<Entry>* {return (parentId == tree->getRoot().getId() ? tree : nullptr);};
+    Tree<Entry> *parent = m_entries.findUsing(matchFunc);
     if (parent == nullptr)
     {
         // what? If this happens, then big trouble.
@@ -17,7 +17,7 @@ uint64_t Database::addEntry(Entry entry, uint64_t parentId)
     }
     else
     {
-        entry.setParent(parent->getRoot()->getId());
+        entry.setParent(parent->getRoot().getId());
         parent->addBranch(entry);
         return entry.getId();
     }
@@ -42,12 +42,12 @@ std::string Database::print(Tree<Entry>* subTree)
 
     if (subTree == nullptr) subTree = &m_entries;
     static int indent = 0;
-    std::string str = indentStr(indent) + subTree->getRoot()->getTitle() + "\n";
+    std::string str = indentStr(indent) + subTree->getRoot().getTitle() + "\n";
     indent += 4;
     for (unsigned int i = 0; i < subTree->getBranchCount(); i++)
     {
-        Tree<Entry>* t = subTree->getBranch(i);
-        str += print(t);
+        Tree<Entry> t = subTree->getBranch(i);
+        str += print(&t);
     }
     indent -= 4;
     return str;
@@ -55,24 +55,24 @@ std::string Database::print(Tree<Entry>* subTree)
 
 // little recursive helper function that recursively
 // writes an entire tree to file
-void saveTreeToFile(std::ofstream &os, Tree<Entry>* tree)
+void saveTreeToFile(std::ofstream &os, Tree<Entry> &tree)
 {
     using namespace FileIO;
-    Entry* root = tree->getRoot();
-    os << root->getId();
-    os << root->getParent();
-    os << LongData(root->getTitle());
-    os << LongData(root->getUsername());
-    os << LongData(root->getPassword());
-    os << LongData(root->getUrl());
-    os << LongData(root->getNotes());
-    os << root->getCreatedUInt64();
-    os << root->getModifiedUInt64();
-    os << LongData(root->getPasswordScheme());
-    for (unsigned int i = 0; i < tree->getBranchCount(); i++)
+    Entry root = tree.getRoot();
+    os << root.getId();
+    os << root.getParent();
+    os << LongData(root.getTitle());
+    os << LongData(root.getUsername());
+    os << LongData(root.getPassword());
+    os << LongData(root.getUrl());
+    os << LongData(root.getNotes());
+    os << root.getCreatedUInt64();
+    os << root.getModifiedUInt64();
+    os << LongData(root.getPasswordScheme());
+    for (unsigned int i = 0; i < tree.getBranchCount(); i++)
     {
         os << u8(0x01); // "processBytes" indicates more to come
-        saveTreeToFile(os, tree->getBranch(i));
+        saveTreeToFile(os, tree.getBranch(i));
     }
 }
 
@@ -89,7 +89,7 @@ void Database::saveToFile(std::string fileName)
         file << header;
         file << fileFormatVersion;
 
-        saveTreeToFile(file, &m_entries);
+        saveTreeToFile(file, m_entries);
         file << u8(0x00); // "processByte" indicates done
         file.close();
     }
@@ -140,7 +140,7 @@ void readTreeFromFile_v1(std::ifstream &is, Tree<Entry>* tree)
         newEntry.setModified(DateTime(modified));
         newEntry.setPasswordScheme(passwordScheme.toString());
         // lambda to find a parent tree node based on id (other examples would be one to find based on title)
-        auto parentIdFinder = [&parentId](Tree<Entry>* tree) -> Tree<Entry>* {return (parentId == tree->getRoot()->getId() ? tree : nullptr);};
+        auto parentIdFinder = [&parentId](Tree<Entry>* tree) -> Tree<Entry>* {return (parentId == tree->getRoot().getId() ? tree : nullptr);};
         // find and get the parent
         Tree<Entry>* parent = tree->findUsing(parentIdFinder);
         if (parent == nullptr)

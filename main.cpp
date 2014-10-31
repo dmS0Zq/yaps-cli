@@ -202,7 +202,7 @@ int main(int argc, char* argv[])
         cin >> answer;
         if (answer == 'y')
         {
-            database.addEntry(entry, database.getEntries()->getRoot()->getId());
+            database.addEntry(entry, database.getEntries().getRoot().getId());
         }
         else if (answer == 'n')
         {
