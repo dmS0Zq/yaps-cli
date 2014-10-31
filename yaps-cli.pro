@@ -6,19 +6,18 @@ CONFIG -= qt
 SOURCES += main.cpp \
     Entry.cpp \
     DateTime.cpp \
-    Database.cpp \
-    FileIO.cpp
+    FileIO.cpp \
+    Database.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
 
 HEADERS += \
-    LinkedListNode.h \
-    Tree.h \
     Entry.h \
+    FileIO.h \
     DateTime.h \
-    Database.h \
-    FileIO.h
+    Tree.h \
+    Database.h
 
 CONFIG += \
     c++11
