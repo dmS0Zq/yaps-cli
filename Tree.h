@@ -29,7 +29,7 @@ public:
 
     unsigned int getBranchCount() {return m_branchCount;}
 
-    Tree<T>* findUsing(std::function<Tree<T>& (Tree<T>&)> searchCriteria)
+    Tree<T>* findUsing(std::function<Tree<T>*( Tree<T>*)> searchCriteria)
     {
         // example searchCriteria functions
         // mainly useful in this (yaps) program
@@ -38,7 +38,7 @@ public:
         // auto byTitle    = [&title](Tree<Entry>* tree) -> Tree<Entry>* {return (title == tree->getRoot()->getTitle() ? tree : nullptr);};
         // search by parentId
         // auto byParentId = [&parentId](Tree<Entry>* tree) -> Tree<Entry>* {return (parentId == tree->getRoot()->getId() ? tree : nullptr);};
-        Tree<T> result = searchCriteria(this);
+        Tree<T> *result = searchCriteria(this);
         if (result == nullptr && m_branches.size() > 0)
         {
             for (typename std::vector<Tree<T>>::iterator iter = m_branches.begin(); iter != m_branches.end(); ++iter)
