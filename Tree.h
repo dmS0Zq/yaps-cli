@@ -67,6 +67,27 @@ public:
         m_branches.resize(0);
         m_branchCount = 0;
     }
+    void prune(unsigned int i)
+    {
+        if (i >= getBranchCount()) throw IndexOutOfRangeException();
+        else
+        {
+            m_branches.erase(i);
+            m_branchCount--;
+        }
+    }
+    void prune(T val)
+    {
+        for (typename std::vector<Tree<T>>::iterator iter = m_branches.begin(); iter != m_branches.end(); ++iter)
+        {
+            if (val == (*iter).getRoot())
+            {
+                m_branches.erase(iter);
+                m_branchCount--;
+                break;
+            }
+        }
+    }
 
     Tree<T>()
     {
