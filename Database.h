@@ -21,6 +21,7 @@ public:
     Tree<Entry> &getEntries() {return m_entries;}
     //std::string getPassword() {return m_password;}
     uint64_t addEntry(Entry entry, uint64_t parent);
+    void removeEntry(uint64_t id);
     std::string print(Tree<Entry>* subTree = nullptr); // if left default (nullptr), entire db will be printed
     void saveToFile(std::string fileName);
     void readFromFile(std::string fileName);

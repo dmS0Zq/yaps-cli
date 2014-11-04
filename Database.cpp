@@ -23,6 +23,25 @@ uint64_t Database::addEntry(Entry entry, uint64_t parentId)
     }
 }
 
+void Database::removeEntry(uint64_t id)
+{
+    auto byId = [&id](Tree<Entry> *tree) -> Tree<Entry>* {return (id == tree->getRoot().getId() ? tree : nullptr);};
+    Tree<Entry> *treeToRemove = m_entries.findUsing(byId);
+    if (treeToRemove != nullptr)
+    {
+        id = treeToRemove->getRoot().getParent();
+        Tree<Entry> *parentToEdit = m_entries.findUsing(byId);
+        if (parentToEdit != nullptr)
+        {
+            parentToEdit->prune(treeToRemove->getRoot());
+        }
+        else
+        {
+            // bad. throw exception? What?
+        }
+    }
+}
+
 // little helper function that builds the
 // leading indentation string for printing
 // each line of database display
