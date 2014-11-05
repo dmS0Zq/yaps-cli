@@ -18,6 +18,7 @@ HEADERS += \
     DateTime.h \
     Tree.h \
     Database.h
+    Exceptions.h
 
 CONFIG += \
     c++11

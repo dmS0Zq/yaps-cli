@@ -1,18 +1,9 @@
 #ifndef TREE_H
 #define TREE_H
-#include <exception>
 #include <functional>
 #include <vector>
+#include "Exceptions.h"
 
-class IndexOutOfRangeException: public std::exception
-{
-  virtual const char* what() const throw() {return "Index out of range";}
-};
-
-class InvalidOperationException: public std::exception
-{
-    virtual const char* what() const throw() {return "Invalid operation";}
-};
 
 template <class T>
 class Tree
