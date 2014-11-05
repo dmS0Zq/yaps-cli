@@ -87,7 +87,7 @@ void saveTreeToFile(std::ofstream &os, Tree<Entry> &tree)
     os << LongData(root.getNotes());
     os << root.getCreatedUInt64();
     os << root.getModifiedUInt64();
-    os << LongData(root.getPasswordScheme());
+    //os << LongData(root.getPasswordScheme());
     for (unsigned int i = 0; i < tree.getBranchCount(); i++)
     {
         os << u8(0x01); // "processBytes" indicates more to come
@@ -133,7 +133,7 @@ void readTreeFromFile_v1(std::ifstream &is, Tree<Entry>* tree)
         LongData notes;
         u64 created;
         u64 modified;
-        LongData passwordScheme;
+        //LongData passwordScheme;
         // read them in
         is >> id;
         is >> parentId;
@@ -144,7 +144,7 @@ void readTreeFromFile_v1(std::ifstream &is, Tree<Entry>* tree)
         is >> notes;
         is >> created;
         is >> modified;
-        is >> passwordScheme;
+        //is >> passwordScheme;
         // make a new entry
         Entry newEntry = Entry();
         // and set all its values
@@ -157,7 +157,7 @@ void readTreeFromFile_v1(std::ifstream &is, Tree<Entry>* tree)
         newEntry.setNotes(notes.toString());
         newEntry.setCreated(DateTime(created));
         newEntry.setModified(DateTime(modified));
-        newEntry.setPasswordScheme(passwordScheme.toString());
+        //newEntry.setPasswordPolicy(passwordScheme.toString());
         // lambda to find a parent tree node based on id (other examples would be one to find based on title)
         auto parentIdFinder = [&parentId](Tree<Entry>* tree) -> Tree<Entry>* {return (parentId == tree->getRoot().getId() ? tree : nullptr);};
         // find and get the parent
