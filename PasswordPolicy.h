@@ -11,7 +11,7 @@ public:
     enum CharacterClass
     {
         CHAR_CLASS_LOW_ALPHAS = 0,
-        CHAR_CLASS_HIGH_ALPHAS = 1,
+        CHAR_CLASS_UPPER_ALPHAS = 1,
         CHAR_CLASS_DIGITS = 2,
         CHAR_CLASS_SYMBOLS = 3,
         CHAR_CLASS_SPACE = 4,
