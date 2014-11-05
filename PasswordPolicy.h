@@ -23,7 +23,7 @@ public:
     bool getClassEnabled(CharacterClass cc);
     bool getClassDisabled(CharacterClass cc) {return !getClassEnabled(cc);}
     void setClassMinimum(CharacterClass cc, int min);
-    bool getClassMinimum(CharacterClass cc);
+    int getClassMinimum(CharacterClass cc);
     void setLength(int length) {m_minimumLength = m_maximumLength = length;}
     void setLength(int minLen, int maxLen);
     unsigned int getMinLength() {return m_minimumLength;}

@@ -41,7 +41,7 @@ void PasswordPolicy::setClassMinimum(CharacterClass cc, int min)
         m_charClassMinimums[cc] = min;
 }
 
-bool PasswordPolicy::getClassMinimum(CharacterClass cc)
+int PasswordPolicy::getClassMinimum(CharacterClass cc)
 {
     if (cc >= CHAR_CLASS_SIZE)
         throw IndexOutOfRangeException();
