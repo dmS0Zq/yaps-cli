@@ -1,6 +1,8 @@
 #ifndef ENTRY_H
 #define ENTRY_H
 #include <string>
+#include <random>
+#include <chrono>
 #include "DateTime.h"
 #include "PasswordPolicy.h"
 
@@ -26,6 +28,8 @@ private:
     DateTime m_modified;
     std::string m_dateFormatString;
     PasswordPolicy m_passwordPolicy;
+    static std::random_device rd;
+    static std::mt19937_64 mtrand_64;
 public:
     void setId(uint64_t id) {m_id = id;}
     void setParent(uint64_t parent) {m_parent = parent;}

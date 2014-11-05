@@ -5,7 +5,8 @@
 #include <random>
 #include <chrono>
 
-std::mt19937_64 mtrand = std::mt19937_64(std::chrono::high_resolution_clock::now().time_since_epoch().count());
+std::random_device Entry::rd;
+std::mt19937_64 Entry::mtrand_64 = std::mt19937_64(rd());
 
 std::string Entry::print()
 {
@@ -33,7 +34,7 @@ Entry::Entry()
     m_notes = "";
     m_created = getCurrentLocalTime();
     m_modified = m_created;
-    m_id = mtrand();
+    m_id = mtrand_64();
     m_parent = 0;
 
     m_dateFormatString = "%Y-%M-%D %H:%I:%S";
