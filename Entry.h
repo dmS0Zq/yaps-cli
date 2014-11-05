@@ -2,6 +2,7 @@
 #define ENTRY_H
 #include <string>
 #include "DateTime.h"
+#include "PasswordPolicy.h"
 
 /*TODO:
  * Find a place to store preference for date formating string
@@ -24,7 +25,7 @@ private:
     DateTime m_created;
     DateTime m_modified;
     std::string m_dateFormatString;
-    std::string m_passwordScheme;
+    PasswordPolicy m_passwordPolicy;
 public:
     void setId(uint64_t id) {m_id = id;}
     void setParent(uint64_t parent) {m_parent = parent;}
@@ -36,7 +37,7 @@ public:
     void setCreated(DateTime time = getCurrentLocalTime()) {m_created = time;}
     void setModified(DateTime time = getCurrentLocalTime()) {m_modified = time;}
     //void setDateFormatString(std::string format) {m_dateFormatString = format;}
-    void setPasswordScheme(std::string scheme) {m_passwordScheme = scheme;}
+    void setPasswordPolicy(PasswordPolicy policy) {m_passwordPolicy = policy;}
     uint64_t getId() const {return m_id;}
     uint64_t getParent() {return m_parent;}
     std::string getTitle() {return m_title;}
@@ -47,7 +48,7 @@ public:
     std::string getCreated() {return m_created.format(m_dateFormatString);}
     std::string getModified() {return m_modified.format(m_dateFormatString);}
     //std::string getDateFormatString() //... shouldn't ever be needed, eh?
-    std::string getPasswordScheme() {return m_passwordScheme;}
+    PasswordPolicy getPasswordPolicy() {return m_passwordPolicy;}
     uint64_t getCreatedUInt64() {return m_created.asUInt64();}
     uint64_t getModifiedUInt64() {return m_modified.asUInt64();}
     std::string print();
