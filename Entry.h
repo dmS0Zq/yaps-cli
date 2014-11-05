@@ -51,6 +51,7 @@ public:
     PasswordPolicy getPasswordPolicy() {return m_passwordPolicy;}
     uint64_t getCreatedUInt64() {return m_created.asUInt64();}
     uint64_t getModifiedUInt64() {return m_modified.asUInt64();}
+    void generatePassword();
     std::string print();
     Entry();
     ~Entry();

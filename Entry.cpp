@@ -20,6 +20,11 @@ std::string Entry::print()
     return str;
 }
 
+void Entry::generatePassword()
+{
+    m_password = m_passwordPolicy.generate();
+}
+
 Entry::Entry()
 {
     m_username = "";
