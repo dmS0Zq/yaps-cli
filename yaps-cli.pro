@@ -7,7 +7,8 @@ SOURCES += main.cpp \
     Entry.cpp \
     DateTime.cpp \
     FileIO.cpp \
-    Database.cpp
+    Database.cpp \
+    PasswordPolicy.cpp
 
 include(deployment.pri)
 qtcAddDeployment()
@@ -17,7 +18,8 @@ HEADERS += \
     FileIO.h \
     DateTime.h \
     Tree.h \
-    Database.h
+    Database.h \
+    PasswordPolicy.h \
     Exceptions.h
 
 CONFIG += \
