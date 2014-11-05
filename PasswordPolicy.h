@@ -3,6 +3,8 @@
 
 #include <vector>
 #include <string>
+#include <random>
+#include <chrono>
 #include "Exceptions.h"
 
 class PasswordPolicy
@@ -28,12 +30,15 @@ public:
     void setLength(int minLen, int maxLen);
     unsigned int getMinLength() {return m_minimumLength;}
     unsigned int getMaxLength() {return m_maximumLength;}
-    std::string generate() {return "";}
+    std::string generate();
     PasswordPolicy();
 private:
     unsigned int m_minimumLength;
     unsigned int m_maximumLength;
     std::vector<int> m_charClassMinimums;
+    static const std::vector<std::string> CHARSETS;
+    static std::random_device rd;
+    static std::mt19937_64 mtrand_64;
 };
 
 #endif // PASSWORDPOLICY_H
