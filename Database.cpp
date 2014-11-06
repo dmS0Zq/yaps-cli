@@ -61,7 +61,7 @@ std::string Database::print(Tree<Entry>* subTree)
 
     if (subTree == nullptr) subTree = &m_entries;
     static int indent = 0;
-    std::string str = indentStr(indent) + subTree->getRoot().getTitle() + "\n";
+    std::string str = indentStr(indent) + subTree->getRoot().getTitle() + " " + std::to_string(subTree->getRoot().getId()) + "\n";
     indent += 4;
     for (unsigned int i = 0; i < subTree->getBranchCount(); i++)
     {
@@ -87,7 +87,14 @@ void saveTreeToFile(std::ofstream &os, Tree<Entry> &tree)
     os << LongData(root.getNotes());
     os << root.getCreatedUInt64();
     os << root.getModifiedUInt64();
-    //os << LongData(root.getPasswordScheme());
+    PasswordPolicy pp = root.getPasswordPolicy();
+    os << (u8)pp.getMode();
+    os << pp.getMinLength();
+    os << pp.getMaxLength();
+    os << (u8)pp.numberOfClasses();
+    for (unsigned int i = 0; i < pp.numberOfClasses(); i++)
+        os << pp.getClassMinimum(static_cast<PasswordPolicy::CharacterClass>(i));
+    os << LongData(pp.getSpecialCharset());
     for (unsigned int i = 0; i < tree.getBranchCount(); i++)
     {
         os << u8(0x01); // "processBytes" indicates more to come
@@ -133,7 +140,11 @@ void readTreeFromFile_v1(std::ifstream &is, Tree<Entry>* tree)
         LongData notes;
         u64 created;
         u64 modified;
-        //LongData passwordScheme;
+        u8 ppMode;
+        u32 ppMinLen;
+        u32 ppMaxLen;
+        u8 ppNumClasses;
+        LongData ppSpecialCharset;
         // read them in
         is >> id;
         is >> parentId;
@@ -144,9 +155,13 @@ void readTreeFromFile_v1(std::ifstream &is, Tree<Entry>* tree)
         is >> notes;
         is >> created;
         is >> modified;
-        //is >> passwordScheme;
+        is >> ppMode;
+        is >> ppMinLen;
+        is >> ppMaxLen;
+        is >> ppNumClasses;
         // make a new entry
         Entry newEntry = Entry();
+        PasswordPolicy pp = PasswordPolicy();
         // and set all its values
         newEntry.setId(id);
         newEntry.setParent(parentId);
@@ -157,7 +172,18 @@ void readTreeFromFile_v1(std::ifstream &is, Tree<Entry>* tree)
         newEntry.setNotes(notes.toString());
         newEntry.setCreated(DateTime(created));
         newEntry.setModified(DateTime(modified));
-        //newEntry.setPasswordPolicy(passwordScheme.toString());
+        pp.setMode(static_cast<PasswordPolicy::GenerateMode>(ppMode));
+        pp.setLength(ppMinLen, ppMaxLen);
+        for (unsigned int i = 0; i < ppNumClasses; i++)
+        {
+            s32 buffer;
+            is >> buffer;
+            pp.setClassMinimum(static_cast<PasswordPolicy::CharacterClass>(i), buffer);
+        }
+        is >> ppSpecialCharset;
+        pp.setSpecialCharset(ppSpecialCharset.toString());
+        newEntry.setPasswordPolicy(pp);
+
         // lambda to find a parent tree node based on id (other examples would be one to find based on title)
         auto parentIdFinder = [&parentId](Tree<Entry>* tree) -> Tree<Entry>* {return (parentId == tree->getRoot().getId() ? tree : nullptr);};
         // find and get the parent
