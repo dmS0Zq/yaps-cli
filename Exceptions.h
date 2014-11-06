@@ -14,5 +14,9 @@ class InvalidArgumentException: public std::exception
 {
     virtual const char* what() const throw() {return "Invalid arguments";}
 };
+class InvalidInternalStateException: public std::exception
+{
+    virtual const char* what() const throw() {return "Invalid internal state";}
+};
 
 #endif // EXCEPTIONS_H
