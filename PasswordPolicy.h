@@ -12,11 +12,11 @@ class PasswordPolicy
 public:
     enum CharacterClass
     {
-        CHAR_CLASS_LOW_ALPHAS = 0,
-        CHAR_CLASS_UPPER_ALPHAS = 1,
-        CHAR_CLASS_DIGITS = 2,
-        CHAR_CLASS_SYMBOLS = 3,
-        CHAR_CLASS_SPACE = 4,
+        LOW_ALPHAS      = 0,
+        UPPER_ALPHAS    = 1,
+        DIGITS          = 2,
+        SYMBOLS         = 3,
+        SPACE           = 4,
         CHAR_CLASS_SIZE = 5
     };
     void enableClass(CharacterClass cc);
