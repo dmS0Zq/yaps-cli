@@ -19,6 +19,11 @@ public:
         SPACE           = 4,
         CHAR_CLASS_SIZE = 5
     };
+    enum GenerateMode
+    {
+        NORMAL_MODE     = 0,
+        SPECIAL_MODE    = 1
+    };
     void enableClass(CharacterClass cc);
     void setClassEnabled(CharacterClass cc, bool enabled);
     void setClassDisabled(CharacterClass cc, bool disabled) {setClassEnabled(cc, !disabled);}
@@ -33,9 +38,11 @@ public:
     std::string generate();
     PasswordPolicy();
 private:
+    GenerateMode m_mode;
     unsigned int m_minimumLength;
     unsigned int m_maximumLength;
     std::vector<int> m_charClassMinimums;
+    std::string m_specialCharset;
     static const std::vector<std::string> CHARSETS;
     static std::random_device rd;
     static std::mt19937_64 mtrand_64;

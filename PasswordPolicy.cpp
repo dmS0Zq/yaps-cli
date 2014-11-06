@@ -14,6 +14,8 @@ PasswordPolicy::PasswordPolicy()
 {
     m_minimumLength = 0;
     m_maximumLength = 0;
+    m_mode = NORMAL_MODE;
+    m_specialCharset = "";
     m_charClassMinimums = std::vector<int>(CHAR_CLASS_SIZE, -1);
 }
 
