@@ -20,7 +20,18 @@ LongData    url                     ""          // no purpose
 LongData    notes                   ""          // no purpose
 u64         created                 DateTime    // std::string when database was made (xxxx-xx-xx xx:xx:xx)
 u64         modified                DateTime    // same, but when modified
-LongData    passwordScheme          ""          // default password scheme for generating new passwords
+     /*** password policy ***/
+u8          ppMode                  NORMAL_MODE // 0
+u32         ppMinLen                8
+u32         ppMaxLen                32
+u32         ppNumClasses            5
+s32         ppClass1Min             -1
+s32         ppClass2Min             0
+s32         ppClass3Min             4
+s32         ppClass4Min             -1
+s32         ppClass5Min             0
+LongData    ppSpecialCharset        ""
+     /***********************/
 
 u8          processByte             0x00 or 0x01 // what to do next, 0 = done, 1 = continue
 
