@@ -37,16 +37,24 @@ public:
 // overload stream operators to write out all the above types
 // in the way this program expects
 //
-std::ofstream& operator<<(std::ofstream &os, LongData data);
-std::ofstream& operator<<(std::ofstream &os, u8 data);
-std::ofstream& operator<<(std::ofstream &os, u16 data);
-std::ofstream& operator<<(std::ofstream &os, u32 data);
-std::ofstream& operator<<(std::ofstream &os, u64 data);
-std::ifstream& operator>>(std::ifstream &is, LongData &data);
-std::ifstream& operator>>(std::ifstream &is, u8 &data);
-std::ifstream& operator>>(std::ifstream &is, u16 &data);
-std::ifstream& operator>>(std::ifstream &is, u32 &data);
-std::ifstream& operator>>(std::ifstream &is, u64 &data);
+std::ofstream &operator<<(std::ofstream &os, LongData data);
+std::ofstream &operator<<(std::ofstream &os, u8 data);
+std::ofstream &operator<<(std::ofstream &os, u16 data);
+std::ofstream &operator<<(std::ofstream &os, u32 data);
+std::ofstream &operator<<(std::ofstream &os, u64 data);
+std::ofstream &operator<<(std::ofstream &os, s8 data);
+std::ofstream &operator<<(std::ofstream &os, s16 data);
+std::ofstream &operator<<(std::ofstream &os, s32 data);
+std::ofstream &operator<<(std::ofstream &os, s64 data);
+std::ifstream &operator>>(std::ifstream &is, LongData &data);
+std::ifstream &operator>>(std::ifstream &is, u8 &data);
+std::ifstream &operator>>(std::ifstream &is, u16 &data);
+std::ifstream &operator>>(std::ifstream &is, u32 &data);
+std::ifstream &operator>>(std::ifstream &is, u64 &data);
+std::ifstream &operator>>(std::ifstream &is, s8 &data);
+std::ifstream &operator>>(std::ifstream &is, s16 &data);
+std::ifstream &operator>>(std::ifstream &is, s32 &data);
+std::ifstream &operator>>(std::ifstream &is, s64 &data);
 
 }
 
